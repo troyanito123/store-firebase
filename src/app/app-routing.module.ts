@@ -16,26 +16,6 @@ const routes: Routes = [
     redirectTo: 'tabs',
     pathMatch: 'full',
   },
-  {
-    path: 'tabs',
-    loadChildren: () =>
-      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
-  },
-  {
-    path: 'cart',
-    loadChildren: () =>
-      import('./cart/cart.module').then((m) => m.CartPageModule),
-  },
-  {
-    path: 'orders',
-    loadChildren: () =>
-      import('./orders/orders.module').then((m) => m.OrdersPageModule),
-  },
-  {
-    path: 'settings',
-    loadChildren: () =>
-      import('./settings/settings.module').then((m) => m.SettingsPageModule),
-  },
 ];
 
 @NgModule({

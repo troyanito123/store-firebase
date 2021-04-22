@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { Product } from 'src/app/interfaces/interface';
+import { Image, Product } from 'src/app/interfaces/interface';
 
 import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -33,12 +33,33 @@ export class ProductService {
       .list<Product>('products')
       .snapshotChanges()
       .pipe(
-        map(
-          (res: any[]) =>
-            res.map((r) => ({ id: r.key, ...r.payload.val() })) as Product[]
+        map((res: any[]) =>
+          res.map((r) => ({ id: r.key, ...r.payload.val() }))
         ),
+        map((res: any[]) => {
+          return res.map((r) => {
+            const imgArr = this.createImagesArr(r.images);
+            const newp = { ...r };
+            newp.images = imgArr;
+            return newp as Product;
+          });
+        }),
         tap((products) => (this._products = products))
       );
+  }
+
+  createImagesArr(imagesObj: object) {
+    const images: Image[] = [];
+    if (!imagesObj) {
+      return images;
+    }
+    Object.keys(imagesObj).forEach((key) => {
+      const image: any = {};
+      image.id = key;
+      image.url = imagesObj[key];
+      images.push(image);
+    });
+    return images;
   }
 
   create(product: Product, images?: Blob[]) {

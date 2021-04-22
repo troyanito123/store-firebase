@@ -11,6 +11,7 @@ import { ProductListComponent } from './pages/product-list/product-list.componen
 import { ProductComponent } from './pages/product/product.component';
 import { ProductNewComponent } from './pages/product-new/product-new.component';
 import { ProductFormComponent } from './components/product-form/product-form.component';
+import { ProductNewImagesComponent } from './components/product-new-images/product-new-images.component';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { ProductFormComponent } from './components/product-form/product-form.com
     ProductComponent,
     ProductNewComponent,
     ProductFormComponent,
+    ProductNewImagesComponent,
   ],
 })
 export class ProductsPageModule {}

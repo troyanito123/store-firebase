@@ -1,5 +1,7 @@
 {
   "name": "store-firebase",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -10,14 +10,21 @@ import { ProductsPage } from './products.page';
 import { ProductListComponent } from './pages/product-list/product-list.component';
 import { ProductComponent } from './pages/product/product.component';
 import { ProductNewComponent } from './pages/product-new/product-new.component';
+import { ProductFormComponent } from './components/product-form/product-form.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ProductsPageRoutingModule],
+  imports: [
+    CommonModule,
+    IonicModule,
+    ProductsPageRoutingModule,
+    ReactiveFormsModule,
+  ],
   declarations: [
     ProductsPage,
     ProductListComponent,
     ProductComponent,
     ProductNewComponent,
+    ProductFormComponent,
   ],
 })
 export class ProductsPageModule {}

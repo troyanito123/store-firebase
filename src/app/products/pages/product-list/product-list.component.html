@@ -8,10 +8,23 @@
 </ion-header>
 
 <ion-content>
-  <h1>lista de productos!!!</h1>
-  <ion-item routerLink="/tabs/settings/products/edit/123321" detail>
-    <ion-label>Producto 1</ion-label>
-  </ion-item>
+  <ion-list>
+    <ion-item
+      routerLink="/tabs/settings/products/edit/{{ product.id }}"
+      *ngFor="let product of products"
+      detail
+    >
+      <ion-label class="ion-text-wrap">
+        <ion-text color="primary">
+          <h3>{{ product.name }}</h3>
+        </ion-text>
+        <p>{{ product.description }}</p>
+        <ion-text color="secondary">
+          <p>{{ product.price }}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button routerLink="/tabs/settings/products/product/new">

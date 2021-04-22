@@ -2,12 +2,15 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Product } from 'src/app/interfaces/interface';
 
-import { catchError, map, take, tap } from 'rxjs/operators';
+import { catchError, finalize, map, take, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ImageItem } from 'src/app/models/imageItem';
+import { AngularFireStorage } from '@angular/fire/storage';
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
+  private MEDIA_STORAGE_PATH = 'products';
   private _products: Product[] = [];
 
   _product: Product;
@@ -20,7 +23,10 @@ export class ProductService {
     return [...this._products];
   }
 
-  constructor(private db: AngularFireDatabase) {}
+  constructor(
+    private db: AngularFireDatabase,
+    private storage: AngularFireStorage
+  ) {}
 
   getAll() {
     return this.db
@@ -35,10 +41,35 @@ export class ProductService {
       );
   }
 
-  create(product: Product) {
-    product.createdAt = new Date().getDate().toPrecision();
-    product.updatedAt = new Date().getDate().toPrecision();
-    return this.db.list('products').push(product).get();
+  create(product: Product, images?: Blob[]) {
+    product.createdAt = Date.now().toPrecision();
+    product.updatedAt = Date.now().toPrecision();
+
+    return this.db
+      .list(this.MEDIA_STORAGE_PATH)
+      .push(product)
+      .then((ref) => {
+        const imagesRef = this.db.list(
+          `${this.MEDIA_STORAGE_PATH}/${ref.key}/images`
+        );
+        for (const item of images) {
+          const filePath = this.generateFileName(
+            `${Date.now().toPrecision()}-no-name`
+          );
+          const fileRef = this.storage.ref(filePath);
+          const task = this.storage.upload(filePath, item);
+          task
+            .snapshotChanges()
+            .pipe(
+              finalize(() => {
+                fileRef.getDownloadURL().subscribe((res) => {
+                  imagesRef.push(res);
+                });
+              })
+            )
+            .subscribe();
+        }
+      });
   }
 
   getOne(id: string) {
@@ -76,5 +107,9 @@ export class ProductService {
         ),
         catchError((err) => of(false))
       );
+  }
+
+  private generateFileName(name: string): string {
+    return `${this.MEDIA_STORAGE_PATH}/${new Date().getTime()}_${name}`;
   }
 }

@@ -57,8 +57,8 @@ export class CameraService {
       allowEditing: false,
       quality: 50,
       correctOrientation: true,
-      height: 150,
-      width: 150,
+      height: 800,
+      width: 800,
     };
     return await Camera.getPhoto(opts);
   }

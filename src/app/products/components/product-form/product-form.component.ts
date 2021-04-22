@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Product } from 'src/app/interfaces/interface';
+import { ImageItem } from 'src/app/models/imageItem';
+import { CameraService } from 'src/app/services/camera.service';
 import { ProductUniqueService } from 'src/app/utils/product-unique.service';
 import { ValidatorService } from 'src/app/utils/validator.service';
 import { ProductService } from '../../services/product.service';
@@ -18,25 +20,33 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   productForm: FormGroup;
 
   units: string[] = ['UNIDAD', 'KILOGRAMO', 'LIBRA'];
+  imageList: ImageItem[] = [];
 
   productsSubs: Subscription;
+  imagesSubs: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private router: Router,
-    private productUniqueService: ProductUniqueService
+    private productUniqueService: ProductUniqueService,
+    private cameraService: CameraService
   ) {}
 
   ngOnInit() {
     this.createForm();
+    this.imageList = this.cameraService.imageList;
+    this.imagesSubs = this.cameraService.imageList$.subscribe(
+      (list) => (this.imageList = list)
+    );
   }
 
   ngOnDestroy(): void {
     this.productsSubs?.unsubscribe();
+    this.imagesSubs?.unsubscribe();
   }
 
-  saveProduct() {
+  async saveProduct() {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
       return;
@@ -49,8 +59,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/tabs/settings/products']);
         });
     } else {
+      const images = await this.createBlobImages();
       this.productService
-        .create(this.productForm.value)
+        .create(this.productForm.value, images)
         .then((resp) => {
           console.log(resp);
           this.router.navigate(['/tabs/settings/products']);
@@ -137,5 +148,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       return 'Stock debe ser maximo de 9999';
     }
     return '';
+  }
+
+  private async createBlobImages() {
+    const images = [];
+    for (const item of this.imageList) {
+      const blob = await fetch(item.image.webPath).then((r) => r.blob());
+      images.push(blob);
+    }
+    return images;
   }
 }

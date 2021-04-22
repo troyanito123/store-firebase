@@ -14,11 +14,9 @@
       *ngFor="let product of products"
       detail
     >
-      <ion-item>
-        <ion-avatar slot="start" *ngIf="product.images.length > 0">
-          <img [src]="product.images[0].url" />
-        </ion-avatar>
-      </ion-item>
+      <ion-avatar slot="start" *ngIf="product.images.length > 0">
+        <img [src]="product.images[0].url" />
+      </ion-avatar>
       <ion-label class="ion-text-wrap">
         <ion-text color="primary">
           <h3>{{ product.name }}</h3>

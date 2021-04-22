@@ -31,7 +31,7 @@ export class ProductNewImagesComponent implements OnInit, OnDestroy {
   }
 
   chooseFromGallery() {
-    console.log('escogiendo');
+    this.cameraService.chooseGallery();
   }
 
   removeImage(id: string) {

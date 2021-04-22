@@ -63,7 +63,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.productService
         .create(this.productForm.value, images)
         .then((resp) => {
-          console.log(resp);
+          this.cameraService.cleanAllImagesFromList();
           this.router.navigate(['/tabs/settings/products']);
         })
         .catch((err) => console.log(err));

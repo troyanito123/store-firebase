@@ -36,14 +36,14 @@ export class ProductService {
         map((res: any[]) =>
           res.map((r) => ({ id: r.key, ...r.payload.val() }))
         ),
-        map((res: any[]) => {
-          return res.map((r) => {
+        map((res: any[]) =>
+          res.map((r) => {
             const imgArr = this.createImagesArr(r.images);
             const newp = { ...r };
             newp.images = imgArr;
             return newp as Product;
-          });
-        }),
+          })
+        ),
         tap((products) => (this._products = products))
       );
   }
@@ -94,19 +94,48 @@ export class ProductService {
   }
 
   getOne(id: string) {
-    console.log();
     return this.db
       .object<Product>(`products/${id}`)
       .valueChanges()
       .pipe(
         take(1),
+        map((product) => {
+          const imgArr = this.createImagesArr(product.images);
+          const newp = { ...product };
+          newp.images = imgArr;
+          return newp as Product;
+        }),
         tap((res) => this.changeProductAndEmitt(res))
       );
   }
 
-  update(id: string, product: Product) {
+  update(id: string, product: Product, images: Blob[]) {
     product.updatedAt = new Date().getDate().toPrecision();
-    return this.db.list('products').update(id, product);
+    return this.db
+      .list('products')
+      .update(id, product)
+      .then((ref) => {
+        const imagesRef = this.db.list(
+          `${this.MEDIA_STORAGE_PATH}/${id}/images`
+        );
+        for (const item of images) {
+          const filePath = this.generateFileName(
+            `${Date.now().toPrecision()}-no-name`
+          );
+          const fileRef = this.storage.ref(filePath);
+          const task = this.storage.upload(filePath, item);
+          task
+            .snapshotChanges()
+            .pipe(
+              finalize(() => {
+                fileRef.getDownloadURL().subscribe((res) => {
+                  imagesRef.push(res);
+                });
+              })
+            )
+            .subscribe();
+        }
+      });
   }
 
   resetProduct() {
@@ -132,5 +161,14 @@ export class ProductService {
 
   private generateFileName(name: string): string {
     return `${this.MEDIA_STORAGE_PATH}/${new Date().getTime()}_${name}`;
+  }
+
+  removeImageById(productId: string, image: Image) {
+    return this.db
+      .object(`${this.MEDIA_STORAGE_PATH}/${productId}/images/${image.id}`)
+      .remove()
+      .then((res) => {
+        return this.storage.refFromURL(image.url).delete().toPromise();
+      });
   }
 }

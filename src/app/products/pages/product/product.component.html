@@ -1,12 +1,17 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Producto</ion-title>
+    <ion-title *ngIf="product">{{ product.name }}</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/settings/products"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <app-product-form [product]="product" *ngIf="product"></app-product-form>
+<ion-content *ngIf="product">
+  <app-product-images
+    [images]="product.images"
+    [productId]="product.id"
+  ></app-product-images>
+  <app-product-new-images></app-product-new-images>
+  <app-product-form [product]="product"></app-product-form>
 </ion-content>

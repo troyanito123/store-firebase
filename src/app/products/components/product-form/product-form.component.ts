@@ -52,10 +52,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.product) {
+      const images = await this.createBlobImages();
       this.productService
-        .update(this.product.id, this.productForm.value)
+        .update(this.product.id, this.productForm.value, images)
         .then((resp) => {
-          console.log(resp);
+          this.cameraService.cleanAllImagesFromList();
           this.router.navigate(['/tabs/settings/products']);
         });
     } else {

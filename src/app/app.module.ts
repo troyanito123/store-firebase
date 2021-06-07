@@ -12,6 +12,8 @@ import { AngularFireModule } from '@angular/fire';
 import { BUCKET } from '@angular/fire/storage';
 import { environment } from '../environments/environment';
 
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -23,6 +25,7 @@ import { environment } from '../environments/environment';
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
   providers: [
+    OneSignal,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: BUCKET, useValue: 'gs://storeapp-9941c.appspot.com' },
   ],

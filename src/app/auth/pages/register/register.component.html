@@ -8,7 +8,67 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <h1>Aqui formulario de registro</h1>
+  <div class="form">
+    <form [formGroup]="registerForm" autocomplete="off" (ngSubmit)="register()">
+      <ion-item>
+        <ion-label color="primary" position="floating">Nombre</ion-label>
+        <ion-input
+          type="text"
+          formControlName="name"
+          placeholder="Nombre"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('name')">{{
+          nameMessageError
+        }}</span>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="primary" position="floating">Email</ion-label>
+        <ion-input
+          type="text"
+          formControlName="email"
+          placeholder="Correo electronico"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('email')">{{
+          emailMessageError
+        }}</span>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="primary" position="floating">Contraseña</ion-label>
+        <ion-input
+          type="text"
+          formControlName="password"
+          placeholder="***************"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('password')">{{
+          passwordMessageError
+        }}</span>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="primary" position="floating">Confirmacion</ion-label>
+        <ion-input
+          type="text"
+          formControlName="password2"
+          placeholder="***************"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('password2')">{{
+          password2MessageError
+        }}</span>
+      </ion-item>
+
+      <ion-button
+        type="submit"
+        expand="block"
+        fill="solid"
+        shape="round"
+        [disabled]="registerForm.pending"
+      >
+        Guardar
+      </ion-button>
+    </form>
+  </div>
 </ion-content>
 
 <ion-footer>

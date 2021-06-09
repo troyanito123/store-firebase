@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { PushService } from './services/push.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +6,5 @@ import { PushService } from './services/push.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private pushService: PushService) {
-    this.pushService.initialize();
-  }
+  constructor() {}
 }

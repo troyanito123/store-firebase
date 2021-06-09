@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { EmailUniqueService } from 'src/app/utils/email-unique.service';
 import { UtilsService } from 'src/app/utils/utils.service';
 
 @Component({
@@ -16,7 +17,8 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private emailUniqueService: EmailUniqueService
   ) {}
 
   ngOnInit() {
@@ -46,8 +48,12 @@ export class RegisterComponent implements OnInit {
 
   private createRegisterForm() {
     this.registerForm = this.fb.group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: [
+        '',
+        [Validators.required, Validators.email],
+        [this.emailUniqueService],
+      ],
       password: ['', [Validators.required]],
       password2: ['', [Validators.required]],
     });
@@ -67,8 +73,6 @@ export class RegisterComponent implements OnInit {
       message = 'Nombre es obligatorio';
     } else if (errors?.minlength) {
       message = 'Nombre debe contener minimo 2 caracters';
-    } else if (errors?.unique) {
-      message = 'Ya existe un producto con este nombre';
     }
     return message;
   }
@@ -77,13 +81,11 @@ export class RegisterComponent implements OnInit {
     const errors = this.registerForm.get('email').errors;
     let message = '';
     if (errors?.required) {
-      message = 'Nombre es obligatorio';
-    } else if (errors?.minlength) {
-      message = 'Nombre debe contener minimo 2 caracters';
+      message = 'Email es obligatorio';
     } else if (errors?.unique) {
-      message = 'Ya existe un producto con este nombre';
+      message = 'Email ya registrado';
     } else if (errors?.email) {
-      message = 'Ya existe un producto con este nombre';
+      message = 'Tiene que ser un email valido';
     }
     return message;
   }
@@ -95,10 +97,6 @@ export class RegisterComponent implements OnInit {
       message = 'Nombre es obligatorio';
     } else if (errors?.minlength) {
       message = 'Nombre debe contener minimo 2 caracters';
-    } else if (errors?.unique) {
-      message = 'Ya existe un producto con este nombre';
-    } else if (errors?.email) {
-      message = 'Ya existe un producto con este nombre';
     }
     return message;
   }
@@ -110,10 +108,6 @@ export class RegisterComponent implements OnInit {
       message = 'Nombre es obligatorio';
     } else if (errors?.minlength) {
       message = 'Nombre debe contener minimo 2 caracters';
-    } else if (errors?.unique) {
-      message = 'Ya existe un producto con este nombre';
-    } else if (errors?.email) {
-      message = 'Ya existe un producto con este nombre';
     }
     return message;
   }

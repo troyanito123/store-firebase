@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 // NGRX
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { appReducers } from './app.reducer';
+import { appReducers } from './state/app.reducer';
 
 //Angular fire
 import { AppRoutingModule } from './app-routing.module';

@@ -1,6 +1,6 @@
 import { ActionReducerMap } from '@ngrx/store';
 
-import * as ui from './shared/ui.reducer';
+import * as ui from './reducers/ui.reducer';
 // import * as fromAuth from './auth/auth.reducer';
 // import * as fromIngresoEgreso from './ingreso-egreso/ingreso-egreso.reducer';
 

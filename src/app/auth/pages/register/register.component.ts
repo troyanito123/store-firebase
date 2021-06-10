@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
-import * as uiActions from 'src/app/shared/ui.actions';
+import { AppState } from 'src/app/state/app.reducer';
+import * as uiActions from 'src/app/state/actions/ui.actions';
 
 import { Subscription } from 'rxjs';
 

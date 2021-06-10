@@ -9,6 +9,7 @@ import { User, userRole } from '../models/user';
 import { Store } from '@ngrx/store';
 import { AppStateWithAuth } from '../state/reducers/auth.reducer';
 import * as userActions from '../state/actions/auth.actions';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,6 @@ export class AuthService {
           .valueChanges()
           .subscribe((user: any) => {
             this._user = User.fromFirebase(user);
-            console.log(this._user);
             this.store.dispatch(userActions.setUser({ user: this._user }));
           });
       } else {
@@ -65,5 +65,20 @@ export class AuthService {
 
   logout() {
     return this.auth.signOut();
+  }
+
+  isAuth() {
+    return this.auth.authState.pipe(map((fuser) => fuser != null));
+  }
+
+  isAdmin() {
+    return this.auth.authState.pipe(
+      switchMap((fuser) => this.db.object(`users/${fuser.uid}`).valueChanges()),
+      map((userdb: any) => {
+        const user = User.fromFirebase(userdb);
+        return user.role === userRole.admin;
+      }),
+      take(1)
+    );
   }
 }

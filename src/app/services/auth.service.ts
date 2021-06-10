@@ -7,8 +7,9 @@ import { Subscription } from 'rxjs';
 import { User, userRole } from '../models/user';
 
 import { Store } from '@ngrx/store';
-import { AppStateWithAuth } from '../state/reducers/auth.reducer';
 import * as userActions from '../state/actions/auth.actions';
+import { AppState } from '../state/app.reducer';
+
 import { map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({
@@ -26,7 +27,7 @@ export class AuthService {
   constructor(
     private db: AngularFireDatabase,
     private auth: AngularFireAuth,
-    private store: Store<AppStateWithAuth>
+    private store: Store<AppState>
   ) {}
 
   initAuthListener() {

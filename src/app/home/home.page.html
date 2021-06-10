@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-title> Blank </ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/auth"> Login </ion-button>
-      <ion-button (click)="logout()"> Logout </ion-button>
+      <ion-button *ngIf="!user" routerLink="/auth"> Login </ion-button>
+      <ion-button *ngIf="user" (click)="logout()"> Logout </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

@@ -10,12 +10,12 @@
       <ion-label>Carrito</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="orders">
+    <ion-tab-button tab="orders" *ngIf="user">
       <ion-icon name="list"></ion-icon>
       <ion-label>Pedidos</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="settings">
+    <ion-tab-button tab="settings" *ngIf="isAdmin">
       <ion-icon name="settings-outline"></ion-icon>
       <ion-label>Admin</ion-label>
     </ion-tab-button>

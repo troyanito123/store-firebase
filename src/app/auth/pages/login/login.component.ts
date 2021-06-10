@@ -1,6 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducer';
+import * as uiActions from 'src/app/shared/ui.actions';
+
+import { Subscription } from 'rxjs';
+
 import { AuthService } from 'src/app/services/auth.service';
 import { UtilsService } from 'src/app/utils/utils.service';
 import { ValidatorService } from 'src/app/utils/validator.service';
@@ -10,19 +17,31 @@ import { ValidatorService } from 'src/app/utils/validator.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
+
+  uiSubs: Subscription;
+
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private utilsService: UtilsService,
-    private validatorService: ValidatorService
+    private validatorService: ValidatorService,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {
     this.createloginForm();
+    this.uiSubs = this.store
+      .select('ui')
+      .subscribe(({ isLoading }) => (this.isLoading = isLoading));
+  }
+
+  ngOnDestroy() {
+    this.uiSubs?.unsubscribe();
   }
 
   login() {
@@ -31,16 +50,20 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const { name, email, password } = this.loginForm.value;
+    this.store.dispatch(uiActions.initLoading());
+
+    const { email, password } = this.loginForm.value;
 
     this.authService
       .login(email, password)
       .then(() => {
+        this.store.dispatch(uiActions.stopLoading());
         this.loginForm.reset();
         this.router.navigate(['/tabs/home']);
       })
       .catch(async (err) => {
         const alert = await this.utilsService.createAlert(err.message);
+        this.store.dispatch(uiActions.stopLoading());
         this.loginForm.get('password').reset();
         alert.present();
       });

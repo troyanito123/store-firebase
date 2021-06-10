@@ -1,6 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducer';
+import * as uiActions from 'src/app/shared/ui.actions';
+
+import { Subscription } from 'rxjs';
+
 import { AuthService } from 'src/app/services/auth.service';
 import { EmailUniqueService } from 'src/app/utils/email-unique.service';
 import { UtilsService } from 'src/app/utils/utils.service';
@@ -11,8 +18,12 @@ import { ValidatorService } from 'src/app/utils/validator.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
+
+  uiSubs: Subscription;
+
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -20,11 +31,18 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private utilsService: UtilsService,
     private emailUniqueService: EmailUniqueService,
-    private validatorService: ValidatorService
+    private validatorService: ValidatorService,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {
     this.createRegisterForm();
+    this.uiSubs = this.store
+      .select('ui')
+      .subscribe(({ isLoading }) => (this.isLoading = isLoading));
+  }
+  ngOnDestroy() {
+    this.uiSubs?.unsubscribe();
   }
 
   register() {
@@ -32,17 +50,20 @@ export class RegisterComponent implements OnInit {
       this.registerForm.markAllAsTouched();
       return;
     }
+    this.store.dispatch(uiActions.initLoading());
 
     const { name, email, password } = this.registerForm.value;
 
     this.authService
       .register(name, email, password)
       .then(() => {
+        this.store.dispatch(uiActions.stopLoading());
         this.registerForm.reset();
         this.router.navigate(['/tabs/home']);
       })
       .catch(async (err) => {
         const alert = await this.utilsService.createAlert(err.message);
+        this.store.dispatch(uiActions.stopLoading());
         this.registerForm.get('password').reset();
         this.registerForm.get('password2').reset();
         alert.present();

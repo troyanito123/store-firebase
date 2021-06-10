@@ -34,8 +34,26 @@
         }}</span>
       </ion-item>
 
-      <ion-button type="submit" expand="block" fill="solid" shape="round">
+      <ion-button
+        *ngIf="!isLoading"
+        type="submit"
+        expand="block"
+        fill="solid"
+        shape="round"
+      >
         Ingresar
+      </ion-button>
+
+      <ion-button
+        *ngIf="isLoading"
+        type="button"
+        expand="block"
+        fill="solid"
+        shape="round"
+        disabled
+      >
+        <ion-spinner name="bubbles"></ion-spinner>
+        Cargando ...
       </ion-button>
     </form>
   </div>

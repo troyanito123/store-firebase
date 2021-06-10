@@ -5,7 +5,7 @@ import * as ui from './reducers/ui.reducer';
 // import * as fromIngresoEgreso from './ingreso-egreso/ingreso-egreso.reducer';
 
 export interface AppState {
-  ui: ui.State;
+  ui: ui.UiState;
   //   auth: fromAuth.AuthState;
   // ingresoEgreso: fromIngresoEgreso.IngresoEgresoState;
 }

@@ -7,10 +7,6 @@ export interface AuthState {
   user: User;
 }
 
-export interface AppStateWithAuth extends AppState {
-  user: AuthState;
-}
-
 export const initialAuthState: AuthState = {
   user: null,
 };

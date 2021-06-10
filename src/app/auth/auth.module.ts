@@ -7,17 +7,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { StoreModule } from '@ngrx/store';
-import { authReducer } from '../state/reducers/auth.reducer';
-
 @NgModule({
   declarations: [LoginComponent, RegisterComponent],
-  imports: [
-    CommonModule,
-    AuthRoutingModule,
-    IonicModule,
-    ReactiveFormsModule,
-    StoreModule.forFeature('auth', authReducer),
-  ],
+  imports: [CommonModule, AuthRoutingModule, IonicModule, ReactiveFormsModule],
 })
 export class AuthModule {}

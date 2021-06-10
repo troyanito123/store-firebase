@@ -8,7 +8,37 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <h1>Aqui formulario de login</h1>
+  <div class="form">
+    <form [formGroup]="loginForm" autocomplete="off" (ngSubmit)="login()">
+      <ion-item>
+        <ion-label color="primary" position="floating">Email</ion-label>
+        <ion-input
+          type="text"
+          formControlName="email"
+          placeholder="Correo electronico"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('email')">{{
+          emailMessageError
+        }}</span>
+      </ion-item>
+
+      <ion-item>
+        <ion-label color="primary" position="floating">Contraseña</ion-label>
+        <ion-input
+          type="password"
+          formControlName="password"
+          placeholder="***************"
+        ></ion-input>
+        <span class="error_message" *ngIf="invalidField('password')">{{
+          passwordMessageError
+        }}</span>
+      </ion-item>
+
+      <ion-button type="submit" expand="block" fill="solid" shape="round">
+        Ingresar
+      </ion-button>
+    </form>
+  </div>
 </ion-content>
 
 <ion-footer>

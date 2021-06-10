@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { EmailUniqueService } from 'src/app/utils/email-unique.service';
 import { UtilsService } from 'src/app/utils/utils.service';
+import { ValidatorService } from 'src/app/utils/validator.service';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,8 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private utilsService: UtilsService,
-    private emailUniqueService: EmailUniqueService
+    private emailUniqueService: EmailUniqueService,
+    private validatorService: ValidatorService
   ) {}
 
   ngOnInit() {
@@ -27,6 +29,7 @@ export class RegisterComponent implements OnInit {
 
   register() {
     if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
       return;
     }
 
@@ -47,16 +50,24 @@ export class RegisterComponent implements OnInit {
   }
 
   private createRegisterForm() {
-    this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: [
-        '',
-        [Validators.required, Validators.email],
-        [this.emailUniqueService],
-      ],
-      password: ['', [Validators.required]],
-      password2: ['', [Validators.required]],
-    });
+    this.registerForm = this.fb.group(
+      {
+        name: ['', [Validators.required, Validators.minLength(2)]],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(this.validatorService.emailPattern),
+          ],
+          [this.emailUniqueService],
+        ],
+        password: ['', [Validators.required]],
+        password2: ['', [Validators.required]],
+      },
+      {
+        validators: [this.validatorService.sameFields('password', 'password2')],
+      }
+    );
   }
 
   invalidField(field: string) {
@@ -84,30 +95,30 @@ export class RegisterComponent implements OnInit {
       message = 'Email es obligatorio';
     } else if (errors?.unique) {
       message = 'Email ya registrado';
-    } else if (errors?.email) {
+    } else if (errors?.pattern) {
       message = 'Tiene que ser un email valido';
     }
     return message;
   }
 
   get passwordMessageError(): string {
-    const errors = this.registerForm.get('email').errors;
+    const errors = this.registerForm.get('password').errors;
     let message = '';
     if (errors?.required) {
       message = 'Nombre es obligatorio';
     } else if (errors?.minlength) {
-      message = 'Nombre debe contener minimo 2 caracters';
+      message = 'Nombre debe contener minimo 6 caracters';
     }
     return message;
   }
 
   get password2MessageError(): string {
-    const errors = this.registerForm.get('email').errors;
+    const errors = this.registerForm.get('password2').errors;
     let message = '';
     if (errors?.required) {
-      message = 'Nombre es obligatorio';
-    } else if (errors?.minlength) {
-      message = 'Nombre debe contener minimo 2 caracters';
+      message = 'la confirmacion es obligatoria';
+    } else if (errors?.noSame) {
+      message = 'las contraseñas no coinciden';
     }
     return message;
   }

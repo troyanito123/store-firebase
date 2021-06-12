@@ -5,6 +5,8 @@ export interface Product {
   price: number;
   stock: number;
   unit: string;
+  promotion: boolean;
+  available: boolean;
   images: Image[];
   createdAt: string;
   updatedAt: string;

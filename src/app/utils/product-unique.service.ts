@@ -19,7 +19,6 @@ export class ProductUniqueService implements AsyncValidator {
     const name = control.value;
     const product = this.productService.product;
     if (product && product?.name === name) {
-      console.log('editando');
       return of(null);
     }
     return this.productService.existsProduct(name).pipe(

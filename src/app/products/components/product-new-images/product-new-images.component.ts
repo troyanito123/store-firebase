@@ -17,7 +17,6 @@ export class ProductNewImagesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.imageList = this.cameraService.imageList;
     this.imageListSubs = this.cameraService.imageList$.subscribe((list) => {
-      console.log(list);
       this.imageList = list;
     });
   }

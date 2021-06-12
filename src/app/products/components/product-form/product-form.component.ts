@@ -1,13 +1,19 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/state/app.reducer';
+
 import { Subscription } from 'rxjs';
+
 import { Product } from 'src/app/interfaces/interface';
 import { ImageItem } from 'src/app/models/imageItem';
 import { CameraService } from 'src/app/services/camera.service';
 import { ProductUniqueService } from 'src/app/utils/product-unique.service';
-import { ValidatorService } from 'src/app/utils/validator.service';
 import { ProductService } from '../../services/product.service';
+import { initLoading, stopLoading } from 'src/app/state/actions/ui.actions';
+import { UtilsService } from 'src/app/utils/utils.service';
 
 @Component({
   selector: 'app-product-form',
@@ -17,6 +23,8 @@ import { ProductService } from '../../services/product.service';
 export class ProductFormComponent implements OnInit, OnDestroy {
   @Input() product: Product;
 
+  isLoading = false;
+
   productForm: FormGroup;
 
   units: string[] = ['UNIDAD', 'KILOGRAMO', 'LIBRA'];
@@ -24,13 +32,16 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   productsSubs: Subscription;
   imagesSubs: Subscription;
+  uiSubs: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
     private router: Router,
     private productUniqueService: ProductUniqueService,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    private store: Store<AppState>,
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit() {
@@ -39,11 +50,15 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.imagesSubs = this.cameraService.imageList$.subscribe(
       (list) => (this.imageList = list)
     );
+    this.uiSubs = this.store.select('ui').subscribe(({ isLoading }) => {
+      this.isLoading = isLoading;
+    });
   }
 
   ngOnDestroy(): void {
     this.productsSubs?.unsubscribe();
     this.imagesSubs?.unsubscribe();
+    this.uiSubs?.unsubscribe();
   }
 
   async saveProduct() {
@@ -51,23 +66,50 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.productForm.markAllAsTouched();
       return;
     }
+    this.store.dispatch(initLoading());
+    const images = await this.createBlobImages();
     if (this.product) {
-      const images = await this.createBlobImages();
       this.productService
         .update(this.product.id, this.productForm.value, images)
-        .then((resp) => {
+        .then(async (resp) => {
+          const toast = await this.utilsService.createToast(
+            'Producto actualizado'
+          );
+          this.store.dispatch(stopLoading());
           this.cameraService.cleanAllImagesFromList();
-          this.router.navigate(['/tabs/settings/products']);
+          this.router
+            .navigate(['/tabs/settings/products'])
+            .then(() => toast.present());
+        })
+        .catch(async (err) => {
+          const alert = await this.utilsService.createAlert(err.message);
+          alert.present();
         });
     } else {
-      const images = await this.createBlobImages();
+      if (images.length == 0) {
+        const alert = await this.utilsService.createAlert(
+          'Tiene que existir al menos una imagen'
+        );
+        alert.present();
+        this.store.dispatch(stopLoading());
+        return;
+      }
       this.productService
         .create(this.productForm.value, images)
-        .then((resp) => {
+        .then(async (resp) => {
+          const toast = await this.utilsService.createToast(
+            'Nuevo producto creado'
+          );
+          this.store.dispatch(stopLoading());
           this.cameraService.cleanAllImagesFromList();
-          this.router.navigate(['/tabs/settings/products']);
+          this.router
+            .navigate(['/tabs/settings/products'])
+            .then(() => toast.present());
         })
-        .catch((err) => console.log(err));
+        .catch(async (err) => {
+          const alert = await this.utilsService.createAlert(err.message);
+          alert.present();
+        });
     }
   }
 

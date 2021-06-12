@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Image } from 'src/app/interfaces/interface';
+import { UtilsService } from 'src/app/utils/utils.service';
 import { ProductService } from '../../services/product.service';
 
 @Component({
@@ -14,13 +15,19 @@ export class ProductImagesComponent implements OnInit {
   @Input()
   productId: string;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private utilsService: UtilsService
+  ) {}
 
   ngOnInit() {}
 
-  removeImage(image: Image) {
+  async removeImage(image: Image) {
     if (this.images.length === 1) {
-      console.log('debes tener por lo menos una images');
+      const alert = await this.utilsService.createAlert(
+        'Tienes que tener por lo menos una imagen!'
+      );
+      alert.present();
       return;
     }
     this.productService.removeImageById(this.productId, image).then(() => {

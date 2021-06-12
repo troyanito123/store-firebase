@@ -72,6 +72,7 @@
     </ion-item>
 
     <ion-button
+      *ngIf="!isLoading"
       type="submit"
       expand="block"
       fill="solid"
@@ -79,6 +80,18 @@
       [disabled]="productForm.pending"
     >
       Guardar
+    </ion-button>
+
+    <ion-button
+      *ngIf="isLoading"
+      type="button"
+      expand="block"
+      fill="solid"
+      shape="round"
+      disabled
+    >
+      <ion-spinner name="bubbles"></ion-spinner>
+      Guardando ...
     </ion-button>
   </form>
 </div>

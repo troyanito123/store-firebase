@@ -48,6 +48,31 @@ export class ProductService {
       );
   }
 
+  getProductForHome() {
+    return this.db
+      .list('products', (ref) => ref.orderByChild('available').equalTo(true))
+      .snapshotChanges()
+      .pipe(
+        map((res: any[]) =>
+          res.map((r) => ({ id: r.key, ...r.payload.val() }))
+        ),
+        map((res: any[]) =>
+          res.map((r) => {
+            const imgArr = this.createImagesArr(r.images);
+            const newp = { ...r };
+            newp.images = imgArr;
+            return newp as Product;
+          })
+        )
+      );
+  }
+
+  getProductWithPromotion() {
+    return this.getProductForHome().pipe(
+      map((res) => res.filter((p) => p.promotion === true))
+    );
+  }
+
   createImagesArr(imagesObj: object) {
     const images: Image[] = [];
     if (!imagesObj) {

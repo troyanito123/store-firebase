@@ -11,7 +11,7 @@ import { Product } from 'src/app/interfaces/interface';
 import { ImageItem } from 'src/app/models/imageItem';
 import { CameraService } from 'src/app/services/camera.service';
 import { ProductUniqueService } from 'src/app/utils/product-unique.service';
-import { ProductService } from '../../services/product.service';
+import { ProductService } from '../../../services/product.service';
 import { initLoading, stopLoading } from 'src/app/state/actions/ui.actions';
 import { UtilsService } from 'src/app/utils/utils.service';
 

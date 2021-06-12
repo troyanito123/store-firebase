@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Image } from 'src/app/interfaces/interface';
 import { UtilsService } from 'src/app/utils/utils.service';
-import { ProductService } from '../../services/product.service';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-product-images',

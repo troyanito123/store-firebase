@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Product } from '../interfaces/interface';
-import { ProductService } from '../products/services/product.service';
+import { ProductService } from '../services/product.service';
 
 @Injectable({
   providedIn: 'root',

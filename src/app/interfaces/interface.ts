@@ -12,6 +12,11 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface ProductInCart extends Product {
+  cant: number;
+  subTotal: number;
+}
+
 export interface Image {
   id: string;
   url: string;

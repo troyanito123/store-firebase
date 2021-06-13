@@ -36,6 +36,6 @@ const _cartReducer = createReducer(
   }))
 );
 
-export function carReducer(state, action) {
+export function cartReducer(state, action) {
   return _cartReducer(state, action);
 }

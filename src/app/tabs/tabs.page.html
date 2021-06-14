@@ -8,6 +8,9 @@
     <ion-tab-button tab="cart">
       <ion-icon name="cart"></ion-icon>
       <ion-label>Carrito</ion-label>
+      <ion-badge *ngIf="cantCart > 0" color="primary" mode="md"
+        >{{cantCart}}</ion-badge
+      >
     </ion-tab-button>
 
     <ion-tab-button tab="orders" *ngIf="user">

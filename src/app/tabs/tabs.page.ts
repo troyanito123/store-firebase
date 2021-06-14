@@ -10,8 +10,11 @@ import { AppState } from '../state/app.reducer';
   styleUrls: ['./tabs.page.scss'],
 })
 export class TabsPage implements OnInit, OnDestroy {
-  userSubs: Subscription;
   user: User;
+  cantCart = 0;
+
+  userSubs: Subscription;
+  cantCartSubs: Subscription;
 
   constructor(private store: Store<AppState>) {}
 
@@ -19,10 +22,15 @@ export class TabsPage implements OnInit, OnDestroy {
     this.userSubs = this.store.select('auth').subscribe(({ user }) => {
       this.user = user;
     });
+
+    this.cantCartSubs = this.store
+      .select('cart')
+      .subscribe(({ cant }) => (this.cantCart = cant));
   }
 
   ngOnDestroy() {
     this.userSubs?.unsubscribe();
+    this.cantCartSubs?.unsubscribe();
   }
 
   get isAdmin() {

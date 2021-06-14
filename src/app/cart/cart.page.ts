@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { OnReducer } from '@ngrx/store/src/reducer_creator';
 import { Subscription } from 'rxjs';
-import { Product } from '../interfaces/interface';
+import { Product, ProductInCart } from '../interfaces/interface';
 import { AppState } from '../state/app.reducer';
 
 @Component({
@@ -14,7 +14,7 @@ import { AppState } from '../state/app.reducer';
 export class CartPage implements OnInit, OnDestroy {
   cartSubs: Subscription;
 
-  products: Product[] = [];
+  products: ProductInCart[] = [];
   cant = 0;
   total = 0;
 

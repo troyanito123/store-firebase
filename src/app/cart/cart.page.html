@@ -10,11 +10,9 @@
     <h2>Cantidad: {{cant}}</h2>
   </ion-text>
   <ion-list>
-    <ion-list-header color="primary">
-      <ion-label>Carrito de compras</ion-label>
-    </ion-list-header>
-    <ion-item *ngFor="let p of products">
-      <ion-label>{{p.name}}</ion-label>
-    </ion-item>
+    <app-product-view
+      [product]="product"
+      *ngFor="let product of products"
+    ></app-product-view>
   </ion-list>
 </ion-content>

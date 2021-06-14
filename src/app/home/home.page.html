@@ -22,14 +22,9 @@
     <ion-list-header color="primary">
       <ion-label>Lista de productos</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let p of products">
-      <ion-label>{{p.name}}</ion-label>
-      <ion-button (click)="addToCart(p)">
-        <ion-icon slot="icon-only" name="add"></ion-icon>
-      </ion-button>
-      <ion-button (click)="removeFromCart(p)" color="danger">
-        <ion-icon slot="icon-only" name="remove"></ion-icon>
-      </ion-button>
-    </ion-item>
+    <app-product-view
+      [product]="product"
+      *ngFor="let product of products"
+    ></app-product-view>
   </ion-list>
 </ion-content>
